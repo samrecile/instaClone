@@ -1,5 +1,13 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block content %}
-<p>post</p>
+{% block title %}Create an Post{% endblock %} 
+{% load crispy_forms_tags %}
+
+{% block content %} 
+    <h2>Post a pic</h2>
+    <form method="POST" enctype="multipart/form-data" action="{% url 'post' %}" class="form-group">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Post</button>
+    </form>
 {% endblock %}

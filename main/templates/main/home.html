@@ -1,2 +1,24 @@
-{% extends 'base.html' %}
-<p>home</p>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Feed{% endblock %}
+
+{% block content %} 
+<h2 class='feed'>Your Feed</h2>
+
+{% if all_images %} {% for image in all_images %}
+<div class='main'>
+    <div class="card" style="width: 30rem; ">
+        <p class='headline'><strong>{{image.imageuploader_profile}}</strong></p>
+        <img class="card-img-top" src="{{ image.image.url }}" alt="Card image cap">
+        <div class="card-body">
+            <p class="card-text"><strong>{{image.imageuploader_profile}}</strong> - "{{image.image_caption}}"</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %} 
+<p>No images</p>
+{% endif %}
+
+{% endblock %}

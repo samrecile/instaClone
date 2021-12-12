@@ -8,6 +8,10 @@ class PostForm(forms.ModelForm):
     model = Image
     fields = ('image_caption', 'image', 'tag_someone')
 
+    def __init__(self, user, *args, **kwargs):
+        self.imageuploader_profile = user
+        super(PostForm, self).__init__(*args, **kwargs)
+
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -18,4 +22,7 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         exclude = ['bio','profile_pic','profile_avatar','date']
 
+class LoginForm(forms.Form):
+    username = forms.CharField(label='username', max_length=100)
+    password = forms.CharField(label='password', max_length=100)
     
