@@ -37,9 +37,9 @@ def post(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            image = Image.objects.latest('date')
+            image = form.save(commit=False)
             image.imageuploader_profile = request.user
+            image.save()
             return redirect('/')
     else:
         form = PostForm()
@@ -55,7 +55,7 @@ def account(request):
 
 # view other profiles
 @login_required(login_url='/login')
-def profile(request):
+def profile(request, user):
     return render(request, 'main/profile.html')
 
 

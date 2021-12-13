@@ -8,9 +8,9 @@ class PostForm(forms.ModelForm):
     model = Image
     fields = ('image_caption', 'image', 'tag_someone')
 
-    def __init__(self, user, *args, **kwargs):
-        self.imageuploader_profile = user
-        super(PostForm, self).__init__(*args, **kwargs)
+  #def __init__(self, user, *args, **kwargs):
+   #     self.imageuploader_profile = user
+    #    super(PostForm, self).__init__(*args, **kwargs)
 
 class UserForm(forms.ModelForm):
     class Meta:
