@@ -5,7 +5,7 @@ from django.conf.urls import include
 from django.contrib.auth import authenticate, login, logout
 from .forms import UserForm, ProfileForm, PostForm, LoginForm
 from django.conf.urls.static import static
-from .models import Profile, Image, Comments
+from .models import Profile, Image, Comments, UserFollowing
 from django.contrib.auth.models import User
 from . import models
 from annoying.decorators import ajax_request
@@ -55,8 +55,20 @@ def account(request):
 
 # view other profiles
 @login_required(login_url='/login')
-def profile(request, user):
-    return render(request, 'main/profile.html')
+def profile(request, prof):
+    if request.method == 'POST':
+        value = request.POST['value']
+        follower = request.POST['follower']
+        followed_user = request.POST['followed_user']
+        if value == 'follow':
+            followers_cnt = UserFollowing.objects.create(follower=follower, followed_user=followed_user)
+            followers_cnt.save()
+            return redirect('profile/?user='+user)
+    else:
+        current_user = request.GET.get('user')
+        profile = Profile(user=userinst)
+        logged_in_user = request.user.username
+    return render(request, 'main/profile.html', {'current_user': current_user})
 
 
 def register(request):
@@ -69,9 +81,8 @@ def register(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                p = Profile(user=userinst)
+                p = Profile(user=user)
         return redirect('/')
     else:
-        #profileform = ProfileForm()
         userform = UserForm()
     return render(request, "registration/register.html", {"userform":userform})

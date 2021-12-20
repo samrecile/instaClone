@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form action="profile/" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="followed_user" value="{{current_user}}" readonly/>
+    <input type="hidden" name="follower" value="{{user.username}}" readonly/>
+    <input type="hidden" name="followed_user" value="" readonly/>
+    <button type="submit" class="btn btn-secondary">
+        Follow
+    </button>
+</form>
+{% endblock %}

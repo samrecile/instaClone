@@ -41,3 +41,15 @@ class Comments (models.Model):
 
     def __str__(self):
         return self.author
+
+class UserFollowing(models.Model):
+    # user doing the following
+    follower = models.ForeignKey(User, related_name="follower", on_delete=models.CASCADE)
+    # user being followed
+    followed_user = models.ForeignKey(User, related_name="followed_user", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.followed_user.username
+
+        # access data with user = User.objects.get(user_id=request.user)
+        # user.following.all()

@@ -10,7 +10,8 @@ urlpatterns = [
     path('explore/', views.explore, name='explore'),
     path('post/', views.post, name='post'),
     path('notification/', views.notification, name='notification'),
-    path('profile/', views.profile, name='profile'),
+    path('account/', views.account, name='account'),
+    path('profile/<str:profile>/', views.profile, name='profile'),
     path('register/', views.register, name='register'),
 ]
 
