@@ -52,4 +52,4 @@ class UserFollowing(models.Model):
         return self.followed_user.username
 
         # access data with user = User.objects.get(user_id=request.user)
-        # user.following.all()
+        # user.followed_user.all()

@@ -1,13 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form action="profile/" method="POST">
+<h1>{{followed.username|lower}}</h1>
+{% if following == True %}
+<form action="{% url 'unfollow_user' %}" method="POST">
     {% csrf_token %}
-    <input type="hidden" name="followed_user" value="{{current_user}}" readonly/>
+    <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
     <input type="hidden" name="follower" value="{{user.username}}" readonly/>
-    <input type="hidden" name="followed_user" value="" readonly/>
+    <input type="hidden" name="value" value="unfollow" readonly/>
     <button type="submit" class="btn btn-secondary">
-        Follow
+        Following
     </button>
 </form>
+{% elif following == False %}
+    <form action="{% url 'follow_user' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
+        <input type="hidden" name="follower" value="{{user.username}}" readonly/>
+        <input type="hidden" name="value" value="follow" readonly/>
+        <button type="submit" class="btn btn-secondary">
+            Follow
+        </button>
+    </form>
+{% endif %}
 {% endblock %}

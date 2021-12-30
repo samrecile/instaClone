@@ -1,5 +1,7 @@
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.http import HttpResponse
 from django.conf.urls import include
 from django.contrib.auth import authenticate, login, logout
@@ -12,7 +14,6 @@ from annoying.decorators import ajax_request
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-
 
 # enables sends confirmation mail using @gmail
 from django.core.mail import send_mail
@@ -53,23 +54,53 @@ def notification(request):
 def account(request):
     return render(request, 'main/account.html')
 
+
+
 # view other profiles
 @login_required(login_url='/login')
-def profile(request, prof):
+def profile(request, username=None):
+    follower = request.user
+    followed = User.objects.get(username=username)
+    context = {
+        'follower': follower, 'followed': followed
+            }
+    try:
+        followBool = UserFollowing.objects.get(follower=follower, followed_user=followed)
+        if followBool:
+            context['following'] = True
+    except:
+        following = False
+        context['following'] = False
+    return render(request, 'main/profile.html', context)
+
+def follow_user(request):
     if request.method == 'POST':
         value = request.POST['value']
         follower = request.POST['follower']
+        follower = User.objects.get(username=follower)
         followed_user = request.POST['followed_user']
+        followed_user = User.objects.get(username=followed_user)
+        captured = followed_user.username
         if value == 'follow':
             followers_cnt = UserFollowing.objects.create(follower=follower, followed_user=followed_user)
             followers_cnt.save()
-            return redirect('profile/?user='+user)
+        return HttpResponseRedirect(reverse('profile', args=[captured]))
     else:
-        current_user = request.GET.get('user')
-        profile = Profile(user=userinst)
-        logged_in_user = request.user.username
-    return render(request, 'main/profile.html', {'current_user': current_user})
+        return redirect('/')
 
+def unfollow_user(request):
+    if request.method == 'POST':
+        value = request.POST['value']
+        follower = request.POST['follower']
+        follower = User.objects.get(username=follower)
+        followed_user = request.POST['followed_user']
+        followed_user = User.objects.get(username=followed_user)
+        captured = followed_user.username
+        if value == 'unfollow':
+            followers_cnt = UserFollowing.objects.get(follower=follower, followed_user=followed_user)
+            followers_cnt.delete()
+        return HttpResponseRedirect(reverse('profile', args=[captured]))
+    return redirect('/')
 
 def register(request):
     if request.method == "POST":

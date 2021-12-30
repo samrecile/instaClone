@@ -11,7 +11,9 @@ urlpatterns = [
     path('post/', views.post, name='post'),
     path('notification/', views.notification, name='notification'),
     path('account/', views.account, name='account'),
-    path('profile/<str:profile>/', views.profile, name='profile'),
+    path('profile/<str:username>/', views.profile, name='profile'),
+    path('followuser', views.follow_user, name='follow_user'),
+    path('unfollowuser', views.unfollow_user, name='unfollow_user'),
     path('register/', views.register, name='register'),
 ]
 
