@@ -30,4 +30,9 @@ class UpdateProfile(forms.ModelForm):
   class Meta:
     model = User
     fields = ('username', 'first_name', 'last_name', 'email', 'password')
+
+class UpdateProfile2(forms.ModelForm):
+  class Meta:
+    model = Profile
+    fields = ('bio', 'profile_pic')
     

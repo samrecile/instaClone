@@ -10,7 +10,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,)
     bio = models.CharField(max_length=350, blank=True)
     profile_pic = models.ImageField(upload_to='ProfilePicture/')
-    profile_avatar = models.ImageField(upload_to='AvatarPicture/')
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -32,6 +31,9 @@ class Image(models.Model):
 
     def __str__(self):
         return self.image_caption
+
+    def likes_count(self):
+            return self.image_likes.count()
 
 
 class Comments (models.Model):

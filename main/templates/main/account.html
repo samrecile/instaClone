@@ -2,11 +2,12 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Hello, {{user.username}}!</h2>
-<h4>Update Account</h4>
-<form method="post">
+<h4>Update Account - {{user.username}}</h4>
+<form method="post" action="{% url 'account' %}">
     {% csrf_token %}
-    <table>{{ form|crispy }}</table>
-    <button type="submit" class="btn btn-success">Submit</button>
+    {{ form|crispy }}
+    {{ form2|crispy }}
+
+    <button type="submit" class="btn btn-success">Update</button>
 </form>
 {% endblock %}

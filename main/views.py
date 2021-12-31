@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import HttpResponse
 from django.conf.urls import include
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserForm, ProfileForm, PostForm, LoginForm, UpdateProfile
+from .forms import UserForm, ProfileForm, PostForm, LoginForm, UpdateProfile, UpdateProfile2
 from django.conf.urls.static import static
 from .models import Profile, Image, Comments, UserFollowing
 from django.contrib.auth.models import User
@@ -26,6 +26,10 @@ def index(request):
     all_users = Profile.objects.all()
     all_images = all_images[::-1][:10]
     liker = request.user
+
+    class PostLikes(Image):
+        def likes_count(self):
+            return self.image_likes.count()
     #next = request.GET.get('next')
     #if next: return redirect(next)
     return render(request, 'main/home.html',  {"all_images": all_images, "all_users":all_users, 'liker': liker})
@@ -53,15 +57,23 @@ def notification(request):
 # view your own profile
 @login_required(login_url='/login')
 def account(request):
+    usern = request.user.username
+    profile = request.user.profile
+    obj = get_object_or_404(User, username=usern)
     if request.method == "POST":
         form = UpdateProfile(request.POST)
+        form2 = UpdateProfile2(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('/'))
+        if form2.is_valid():
+            form.save()
+        return redirect('/')
     else:
-        form = UpdateProfile()
+        form = UpdateProfile(request.POST or None, instance = obj)
+        form2 = UpdateProfile2(request.POST or None, instance = obj)
     context = {}
     context['form'] = form
+    context['form2'] = form2
     return render(request, 'main/account.html', context)
 
 
@@ -71,6 +83,10 @@ def account(request):
 def profile(request, username=None):
     follower = request.user
     followed = User.objects.get(username=username)
+    if follower == followed:
+        can_follow = False
+    else:
+        can_follow = True
     try:
         followers = UserFollowing.objects.filter(followed_user=followed).count()
     except:
@@ -80,7 +96,7 @@ def profile(request, username=None):
     except:
         profile_following = 0
     context = {
-        'follower': follower, 'followed': followed, 'followers': followers, 'profile_following': profile_following
+        'can_follow': can_follow, 'follower': follower, 'followed': followed, 'followers': followers, 'profile_following': profile_following
             }
     try:
         followBool = UserFollowing.objects.get(follower=follower, followed_user=followed)
@@ -100,8 +116,9 @@ def follow_user(request):
         followed_user = User.objects.get(username=followed_user)
         captured = followed_user.username
         if value == 'follow':
-            followers_cnt = UserFollowing.objects.create(follower=follower, followed_user=followed_user)
-            followers_cnt.save()
+            if follower != followed_user:
+                followers_cnt = UserFollowing.objects.create(follower=follower, followed_user=followed_user)
+                followers_cnt.save()
         return HttpResponseRedirect(reverse('profile', args=[captured]))
     else:
         return redirect('/')
