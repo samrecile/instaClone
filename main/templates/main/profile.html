@@ -1,26 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{followed.username|lower}}</h1>
-{% if following == True %}
-<form action="{% url 'unfollow_user' %}" method="POST">
-    {% csrf_token %}
-    <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
-    <input type="hidden" name="follower" value="{{user.username}}" readonly/>
-    <input type="hidden" name="value" value="unfollow" readonly/>
-    <button type="submit" class="btn btn-secondary">
-        Following
-    </button>
-</form>
-{% elif following == False %}
-    <form action="{% url 'follow_user' %}" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
-        <input type="hidden" name="follower" value="{{user.username}}" readonly/>
-        <input type="hidden" name="value" value="follow" readonly/>
-        <button type="submit" class="btn btn-secondary">
-            Follow
-        </button>
-    </form>
-{% endif %}
+<div class="profile-card">
+    <img src="img_avatar.png" alt="Avatar" style="width:100%">
+    <div class="profile-container">
+      <h4><b>{{followed.username|lower}}</b></h4>
+      <p>{{followers}} followers</p>
+      <p>{{profile_following}} following</p>
+      {% if following == True %}
+        <form action="{% url 'unfollow_user' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
+            <input type="hidden" name="follower" value="{{user.username}}" readonly/>
+            <input type="hidden" name="value" value="unfollow" readonly/>
+            <button type="submit" class="btn btn-secondary">Following</button>
+        </form>
+      {% elif following == False %}
+        <form action="{% url 'follow_user' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
+            <input type="hidden" name="follower" value="{{user.username}}" readonly/>
+            <input type="hidden" name="value" value="follow" readonly/>
+            <button type="submit" class="btn btn-secondary">
+                Follow
+            </button>
+        </form>
+       {% endif %}
+    </div>
+</div>
 {% endblock %}

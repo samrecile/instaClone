@@ -84,6 +84,17 @@ DATABASES = {
 }
 
 
+#DATABASES = {
+   # 'default': {
+       # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+      #  'NAME': 'instaClone',
+     #   'USER': 'samrecile',
+    #    'PASSWORD': 'Sjr122198?!$',
+   #     'HOST': '127.0.0.1',
+  #      'PORT': '5432'
+ #   }
+#}
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -132,3 +143,12 @@ LOGOUT_REDIRECT_URL = '/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#STATIC_URL = 'static/'
+#STATIC_ROOT = "/instaClone/static"
+# or, eg,
+#STATIC_ROOT = os.path.join(BASE_DIR, "static")
+#STATICFILES_DIRS = [
+#    BASE_DIR / "static",
+#    '/instaClone/instaClone/static/',
+#]

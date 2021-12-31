@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import HttpResponse
 from django.conf.urls import include
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserForm, ProfileForm, PostForm, LoginForm
+from .forms import UserForm, ProfileForm, PostForm, LoginForm, UpdateProfile
 from django.conf.urls.static import static
 from .models import Profile, Image, Comments, UserFollowing
 from django.contrib.auth.models import User
@@ -25,9 +25,10 @@ def index(request):
     all_images = Image.objects.all()
     all_users = Profile.objects.all()
     all_images = all_images[::-1][:10]
+    liker = request.user
     #next = request.GET.get('next')
     #if next: return redirect(next)
-    return render(request, 'main/home.html',  {"all_images": all_images, "all_users":all_users})
+    return render(request, 'main/home.html',  {"all_images": all_images, "all_users":all_users, 'liker': liker})
 
 @login_required(login_url='/login')
 def explore(request):
@@ -52,7 +53,16 @@ def notification(request):
 # view your own profile
 @login_required(login_url='/login')
 def account(request):
-    return render(request, 'main/account.html')
+    if request.method == "POST":
+        form = UpdateProfile(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('/'))
+    else:
+        form = UpdateProfile()
+    context = {}
+    context['form'] = form
+    return render(request, 'main/account.html', context)
 
 
 
@@ -61,8 +71,16 @@ def account(request):
 def profile(request, username=None):
     follower = request.user
     followed = User.objects.get(username=username)
+    try:
+        followers = UserFollowing.objects.filter(followed_user=followed).count()
+    except:
+        followers = 0
+    try:
+        profile_following = UserFollowing.objects.filter(follower=followed).count()
+    except:
+        profile_following = 0
     context = {
-        'follower': follower, 'followed': followed
+        'follower': follower, 'followed': followed, 'followers': followers, 'profile_following': profile_following
             }
     try:
         followBool = UserFollowing.objects.get(follower=follower, followed_user=followed)
@@ -102,6 +120,35 @@ def unfollow_user(request):
         return HttpResponseRedirect(reverse('profile', args=[captured]))
     return redirect('/')
 
+def like_post(request):
+    if request.method == 'POST':
+        liker = request.POST['liker']
+        liker = User.objects.get(username=liker)
+        post_profile = request.POST['post_profile']
+        post_id = request.POST['post_id']
+        value = request.POST['value']
+        if value == 'like':
+            image = Image.objects.get(image_id=post_id)
+            image.image_likes.add(liker)
+    return redirect('/')
+
+def unlike_post(request):
+    if request.method == 'POST':
+        liker = request.POST['liker']
+        liker = User.objects.get(username=liker)
+        post_profile = request.POST['post_profile']
+        post_id = request.POST['post_id']
+        value = request.POST['value']
+        if value == 'unlike':
+            image = Image.objects.get(image_id=post_id)
+            image.image_likes.remove(liker)
+    return redirect('/')
+
+def search(request):
+    if request.method == 'POST':
+        value = 0
+    return redirect('/')
+
 def register(request):
     if request.method == "POST":
         userform = UserForm(request.POST)
@@ -117,3 +164,4 @@ def register(request):
     else:
         userform = UserForm()
     return render(request, "registration/register.html", {"userform":userform})
+
