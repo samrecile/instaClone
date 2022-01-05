@@ -16,7 +16,6 @@
         {% endif %}
         <img class="card-img-top" src="{{ image.image.url }}" alt="Card image cap">
         <p class="likes-count"><em>likes - {{image.likes_count}}</em></p>
-        
         <form action="{% url 'like_post' %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="post_profile" value="{{image.imageuploader_profile}}" readonly/>

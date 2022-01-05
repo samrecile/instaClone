@@ -59,19 +59,28 @@ def post(request):
         form = PostForm()
     return render(request, 'main/post.html', {"form": form})
 
-def delete_post(request):
-    if request.method == 'POST':
-        value = request.POST['value']
-        post_id = request.POST['post_id']
-        user_profile = request.POST['post_profile']
-        user = User.objects.get(username=user_profile)
-        captured = user.username
-        if value == 'unlike':
-            image = Image.objects.get(image_id=post_id)
+def delete_post(request, post_id=None):
+    if post_id:
+        image = Image.objects.get(image_id=post_id)
+        captured = request.user.username
+        if image.imageuploader_profile == request.user:
             image.delete()
-            return HttpResponseRedirect(reverse('profile', args=[captured]))
+        return HttpResponseRedirect(reverse('profile', args=[captured]))
     else:
         return redirect('/')
+
+   #if request.method == 'POST':
+    #    value = request.POST['value']
+     #   post_id = request.POST['post_id']
+      #  user_profile = request.POST['post_profile']
+       # user = User.objects.get(username=user_profile)
+    #    captured = user.username
+    #    if value == 'unlike':
+    #        image = Image.objects.get(image_id=post_id)
+    #        image.delete()
+    #        return HttpResponseRedirect(reverse('profile', args=[captured]))
+    #else:
+    #    return redirect('/')
 
 
 # view your own profile
@@ -99,15 +108,11 @@ def account(request):
 
 
 
-# view other profiles
+# view other profiles and your own
 @login_required(login_url='/login')
 def profile(request, username=None):
     follower = request.user
     followed = User.objects.get(username=username)
-    if follower == followed:
-        can_follow = False
-    else:
-        can_follow = True
     try:
         followers = UserFollowing.objects.filter(followed_user=followed).count()
     except:
@@ -117,8 +122,21 @@ def profile(request, username=None):
     except:
         profile_following = 0
     context = {
-        'can_follow': can_follow, 'follower': follower, 'followed': followed, 'followers': followers, 'profile_following': profile_following
+        'follower': follower, 'followed': followed, 'followers': followers, 'profile_following': profile_following
             }
+    if follower == followed:
+        can_follow = False
+        context['can_follow'] = can_follow
+        #followers = UserFollowing.objects.filter(followed_user=request.user)
+        #following_profile_objects = UserFollowing.objects.filter(follower=request.user)
+        #following_profiles = []
+        #for obj in following_profile_objects:
+        #    x = obj.followed_user
+        #    following_profile.append(x)
+        #context['followers'] = followers
+        #context['following_profiles'] = following_profiles
+    else:
+        can_follow = True
     try:
         followBool = UserFollowing.objects.get(follower=follower, followed_user=followed)
         if followBool:
@@ -134,6 +152,22 @@ def profile(request, username=None):
     liker = request.user
     context['liker'] = liker
     return render(request, 'main/profile.html', context)
+
+# view you profile followers and the users you follow
+@login_required(login_url='/login')
+def follower_following(request, username=None):
+    if username == request.user.username:
+        context = {}
+        followers = UserFollowing.objects.filter(followed_user=request.user)
+        following_profile_objects = UserFollowing.objects.filter(follower=request.user)
+        following_profiles = []
+        for obj in following_profile_objects:
+            x = obj.followed_user
+            following_profile.append(x)
+        context['followers'] = followers
+        context['following_profiles'] = following_profiles
+    else:
+        return HttpResponseRedirect(reverse('profile', args=[username]))
 
 def follow_user(request):
     if request.method == 'POST':

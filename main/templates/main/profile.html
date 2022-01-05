@@ -33,18 +33,9 @@
 <div class='main'>
     <div class="card" style="width: 30rem; ">
         {% if image.imageuploader_profile %}
-        <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{follower.profile.profile_pic.url}}"></a> - <strong>{{image.imageuploader_profile}}</strong></p>
+        <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{follower.profile.profile_pic.url}}"></a> - <strong>{{image.imageuploader_profile}}</strong><a href="{% url 'delete_post' post_id=image.image_id %}"><em style="padding-left: 200px;">delete</em></p>
         {% else %} 
         <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{follower.profile.profile_pic.url}}"></a></p>
-        {% if not can_follow%}
-        <form action="{% url 'delete_post' %}" method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="post_profile" value="{{image.imageuploader_profile}}" readonly/>
-          <input type="hidden" name="post_id" value="{{image.image_id}}" readonly/>
-          <input type="hidden" name="value" value="delete" readonly/>
-          <button type="submit" id='delete' class="btn btn-outline-danger">Delete</button>
-        </form>
-        {% endif %}
         {% endif %}
         <img class="card-img-top" src="{{ image.image.url }}" alt="Card image cap">
         <p class="likes-count"><em>likes - {{image.likes_count}}</em></p>
