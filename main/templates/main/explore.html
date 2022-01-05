@@ -1,5 +1,36 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block content %}
-<p>explore</p>
+{% block title %}Explore{% endblock %}
+
+{% block content %} 
+<h2 class='feed'>Explore</h2>
+{% if images %} {% for image in images %}
+<div class='main'>
+    <div class="card" style="width: 30rem; ">
+        {% if image.imageuploader_profile %}
+        <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img src="{{image.imageuploader_profile.profile.profile_pic}}"></a> - <strong>{{image.imageuploader_profile}}</strong></p>
+        {% else %} 
+        <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img src="{{image.imageuploader_profile.profile.profile_pic}}"></a></p>
+        {% endif %}
+        <img class="card-img-top" src="{{ image.image.url }}" alt="Card image cap">
+        <p class="likes-count"><em>likes - {{image.likes_count}}</em></p>
+        <form action="{% url 'like_post' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="post_profile" value="{{image.imageuploader_profile}}" readonly/>
+            <input type="hidden" name="post_id" value="{{image.image_id}}" readonly/>
+            <input type="hidden" name="liker" value="{{liker}}" readonly/>
+            <input type="hidden" name="value" value="like" readonly/>
+            <button type="submit" id='like' class="btn btn-secondary">Like Post</button>
+        </form>
+        <div class="card-body">
+            <p class="card-text"><strong>{{image.imageuploader_profile}}</strong> - "{{image.image_caption}}"</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %} 
+<p>No images</p>
+{% endif %}
+
 {% endblock %}

@@ -14,6 +14,9 @@ from annoying.decorators import ajax_request
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from datetime import datetime, timedelta
+from django.db.models import Q
+from django.contrib.auth.views import LoginView
 
 # enables sends confirmation mail using @gmail
 from django.core.mail import send_mail
@@ -22,21 +25,26 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/login')
 def index(request):
-    all_images = Image.objects.all()
-    all_users = Profile.objects.all()
+    user = request.user 
+    followed_user_list = []
+    followed_users = UserFollowing.objects.filter(follower=user)
+    for followed_user in followed_users:
+        followed_user_list.append(followed_user.followed_user)
+    all_images = Image.objects.filter(Q(imageuploader_profile__in=followed_user_list) | Q(imageuploader_profile=user))
     all_images = all_images[::-1][:10]
     liker = request.user
 
-    class PostLikes(Image):
-        def likes_count(self):
-            return self.image_likes.count()
-    #next = request.GET.get('next')
-    #if next: return redirect(next)
-    return render(request, 'main/home.html',  {"all_images": all_images, "all_users":all_users, 'liker': liker})
+    
+    return render(request, 'main/home.html',  {"all_images": all_images, 'liker': liker})
 
 @login_required(login_url='/login')
 def explore(request):
-    return render(request, 'main/explore.html')
+    yesterday = datetime.today() - timedelta(days=1)
+    images = Image.objects.filter(date__gte=yesterday)
+    images = images.order_by('image_likes')[:10]
+    liker = request.user
+    context = {'images': images, 'liker': liker}
+    return render(request, 'main/explore.html', context)
 
 @login_required(login_url='/login')
 def post(request):
@@ -51,8 +59,20 @@ def post(request):
         form = PostForm()
     return render(request, 'main/post.html', {"form": form})
 
-def notification(request):
-    return render(request, 'main/notification.html')
+def delete_post(request):
+    if request.method == 'POST':
+        value = request.POST['value']
+        post_id = request.POST['post_id']
+        user_profile = request.POST['post_profile']
+        user = User.objects.get(username=user_profile)
+        captured = user.username
+        if value == 'unlike':
+            image = Image.objects.get(image_id=post_id)
+            image.delete()
+            return HttpResponseRedirect(reverse('profile', args=[captured]))
+    else:
+        return redirect('/')
+
 
 # view your own profile
 @login_required(login_url='/login')
@@ -60,17 +80,18 @@ def account(request):
     usern = request.user.username
     profile = request.user.profile
     obj = get_object_or_404(User, username=usern)
+    obj_prof = obj.profile
     if request.method == "POST":
-        form = UpdateProfile(request.POST)
-        form2 = UpdateProfile2(request.POST)
-        if form.is_valid():
+        form = UpdateProfile(request.POST, instance=request.user)
+        form2 = UpdateProfile2(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid() and form2.is_valid():
             form.save()
-        if form2.is_valid():
-            form.save()
+            form2.save()
+            
         return redirect('/')
     else:
-        form = UpdateProfile(request.POST or None, instance = obj)
-        form2 = UpdateProfile2(request.POST or None, instance = obj)
+        form = UpdateProfile(instance=obj)
+        form2 = UpdateProfile2(instance=obj_prof)
     context = {}
     context['form'] = form
     context['form2'] = form2
@@ -105,6 +126,13 @@ def profile(request, username=None):
     except:
         following = False
         context['following'] = False
+    try:
+        images = Image.objects.filter(imageuploader_profile=followed)
+        context['images'] = images
+    except:
+        context['images'] = False
+    liker = request.user
+    context['liker'] = liker
     return render(request, 'main/profile.html', context)
 
 def follow_user(request):
@@ -176,9 +204,29 @@ def register(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                p = Profile(user=user)
         return redirect('/')
     else:
         userform = UserForm()
     return render(request, "registration/register.html", {"userform":userform})
 
+
+class view_login(LoginView):
+    template_name = 'registration/login.html'
+
+#def view_login(request):
+#    if request.method == "POST":
+#        loginform = LoginForm(request.POST)
+#        if loginform.is_valid():
+#            username = request.POST['username']
+#            password = request.POST['password']
+#            user = authenticate(request, username=username, password=password)
+#            if user is not None:
+#                login(request, user)
+#        return HttpResponseRedirect(reverse("index"))
+#    else:
+#        loginform = LoginForm()
+#    return render(request, "registration/login.html", {"form":loginform})
+
+def logout(request):
+    logout(request)
+    return redirect('login/')

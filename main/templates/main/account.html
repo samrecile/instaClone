@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h4>Update Account - {{user.username}}</h4>
+<h4 style="margin-top:15px;">Update Account</h4>
 <form method="post" action="{% url 'account' %}">
     {% csrf_token %}
     {{ form|crispy }}

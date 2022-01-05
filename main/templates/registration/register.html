@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %} 
-    <form method="POST" class="form-group">
+    <form method="POST" action="{% url 'register' %}" class="form-group">
         {% csrf_token %}
         {{ userform|crispy }}
         {{ profileform|crispy }}

@@ -33,7 +33,10 @@ class Image(models.Model):
         return self.image_caption
 
     def likes_count(self):
-            return self.image_likes.count()
+        return self.image_likes.count()
+
+    def likers_list(self):
+        return self.image_likes
 
 
 class Comments (models.Model):

@@ -29,6 +29,9 @@
         border-radius: 5px;
         margin-top: 10px;
         margin-bottom: 10px;
+        margin-Left:160px;
+        margin-Right:160px;
+        padding: 0px 10px;
       }
 
       .profile-card:hover {
@@ -39,8 +42,19 @@
         padding: 2px 16px;
       }
 
+      .profilepic {
+        border-radius: 50%;
+        max-width:10%;
+        max-height:10%;
+      }
+
+      .nav-prof-pic {
+        margin:10px;
+      }
+
       .likes-count {
-        margin-left: 10px;
+        margin-top: 10px;
+        margin-left: 15px;
       }
 
       img {
@@ -111,6 +125,7 @@
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        <a class="nav-prof-pic" href="{% url 'profile' username=request.user %}"><img class='profilepic' src="{{user.profile.profile_pic}}"></a>
       </div>
     </nav>
 
@@ -150,7 +165,7 @@
                   Pages
                 </h6>
                 <p>
-                  <a href="{% url "index" %}" class="btn btn-secondary">Summary</a>
+                  <a href="{% url "index" %}" class="btn btn-secondary">Home</a>
                 </p>
                 <p>
                   <a href="{% url "explore" %}" class="btn btn-secondary">Explore</a>
