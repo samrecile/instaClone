@@ -244,23 +244,23 @@ def register(request):
     return render(request, "registration/register.html", {"userform":userform})
 
 
-class view_login(LoginView):
-    template_name = 'registration/login.html'
+#class view_login(LoginView):
+#    template_name = 'registration/login.html'
 
 #def view_login(request):
-#    if request.method == "POST":
-#        loginform = LoginForm(request.POST)
-#        if loginform.is_valid():
-#            username = request.POST['username']
-#            password = request.POST['password']
-#            user = authenticate(request, username=username, password=password)
-#            if user is not None:
-#                login(request, user)
-#        return HttpResponseRedirect(reverse("index"))
-#    else:
-#        loginform = LoginForm()
+    #if request.method == "POST":
+        #loginform = LoginForm(request.POST)
+        #if loginform.is_valid():
+        #username = request.POST['username']
+       # password = request.POST['password']
+      #  user = authenticate(request, username=username, password=password)
+     #   if user is not None:
+    #        login(request, user)
+   #     return HttpResponseRedirect(reverse("index"))
+  #  else:
+ #       loginform = LoginForm()
 #    return render(request, "registration/login.html", {"form":loginform})
 
-def logout(request):
-    logout(request)
-    return redirect('login/')
+#def logout(request):
+#    logout(request)
+#    return redirect('login/')

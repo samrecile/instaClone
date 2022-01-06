@@ -33,7 +33,7 @@
 <div class='main'>
     <div class="card" style="width: 30rem; ">
         {% if image.imageuploader_profile %}
-        <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{follower.profile.profile_pic.url}}"></a> - <strong>{{image.imageuploader_profile}}</strong><a href="{% url 'delete_post' post_id=image.image_id %}"><em style="padding-left: 200px;">delete</em></p>
+        <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{follower.profile.profile_pic.url}}"></a> - <strong>{{image.imageuploader_profile}}</strong><a href="{% url 'delete_post' post_id=image.image_id %}"><em style="padding-left: 200px;">delete</em></p></a>
         {% else %} 
         <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{follower.profile.profile_pic.url}}"></a></p>
         {% endif %}
