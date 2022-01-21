@@ -4,8 +4,11 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.conf.urls import include
-from django.contrib.auth import authenticate, login, logout
-from .forms import UserForm, ProfileForm, PostForm, LoginForm, UpdateProfile, UpdateProfile2
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
+from .forms import UserForm, ProfileForm, PostForm, LoginForm, UpdateProfile, UpdateProfile2, RegistrationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.conf.urls.static import static
 from .models import Profile, Image, Comments, UserFollowing
 from django.contrib.auth.models import User
@@ -229,19 +232,50 @@ def search(request):
     return redirect('/')
 
 def register(request):
-    if request.method == "POST":
-        userform = UserForm(request.POST)
-        if userform.is_valid():
-            userform.save()
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-        return redirect('/')
+    context = {}
+    if not request.user.is_authenticated:
+        if request.method == "POST":
+            form = RegistrationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data["username"]
+                password = form.cleaned_data["password1"]
+                user = authenticate(username=username, password=password)
+                auth_login(request, user)
+                return redirect("index")
+        else:
+            form = RegistrationForm()
+            context["form"] = form
+        return render(request, 'registration/register.html', context)
     else:
-        userform = UserForm()
-    return render(request, "registration/register.html", {"userform":userform})
+        return redirect("index")
+
+
+def login(request):
+    if not request.user.is_authenticated:
+        if request.method == "POST":
+            form = AuthenticationForm(data=request.POST)
+            if form.is_valid():
+                username = form.cleaned_data["username"]
+                password = form.cleaned_data["password"]
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    auth_login(request, user)
+                    if next is not None:
+                        return redirect("index")
+                    else:
+                        return redirect("index")
+        else:
+            form = AuthenticationForm()
+        context = {"form": form}
+        return render(request, 'registration/login.html', context)
+    else:
+        return redirect("index")
+
+def logout(request):
+    if request.user.is_authenticated:
+        auth_logout(request)
+    return redirect("login")
 
 
 #class view_login(LoginView):
