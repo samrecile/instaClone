@@ -95,7 +95,7 @@ def account(request):
     obj_prof = obj.profile
     if request.method == "POST":
         form = UpdateProfile(request.POST, instance=request.user)
-        form2 = UpdateProfile2(request.POST, request.FILES, instance=request.user.profile)
+        form2 = UpdateProfile2(request.POST, request.FILES, instance=profile)
         if form.is_valid() and form2.is_valid():
             form.save()
             form2.save()
@@ -232,7 +232,6 @@ def search(request):
     return redirect('/')
 
 def register(request):
-    context = {}
     if not request.user.is_authenticated:
         if request.method == "POST":
             form = RegistrationForm(request.POST)
@@ -245,10 +244,11 @@ def register(request):
                 return redirect("index")
         else:
             form = RegistrationForm()
-            context["form"] = form
+            context = {"form": form}
         return render(request, 'registration/register.html', context)
     else:
         return redirect("index")
+
 
 
 def login(request):
@@ -277,24 +277,3 @@ def logout(request):
         auth_logout(request)
     return redirect("login")
 
-
-#class view_login(LoginView):
-#    template_name = 'registration/login.html'
-
-#def view_login(request):
-    #if request.method == "POST":
-        #loginform = LoginForm(request.POST)
-        #if loginform.is_valid():
-        #username = request.POST['username']
-       # password = request.POST['password']
-      #  user = authenticate(request, username=username, password=password)
-     #   if user is not None:
-    #        login(request, user)
-   #     return HttpResponseRedirect(reverse("index"))
-  #  else:
- #       loginform = LoginForm()
-#    return render(request, "registration/login.html", {"form":loginform})
-
-#def logout(request):
-#    logout(request)
-#    return redirect('login/')

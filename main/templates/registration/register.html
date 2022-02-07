@@ -1,13 +1,21 @@
 {% extends "base.html" %}
-
-{% block title %}Create an Account{% endblock %} 
 {% load crispy_forms_tags %}
+{% block content %}
+<h1>Register for your account</h1>
+<div class="form">
+    <div class="mt-2 col-md-12"></div>
 
-{% block content %} 
-    <form method="POST" action="{% url 'register' %}" class="form-group">
-        {% csrf_token %}
-        {{ userform|crispy }}
-        {{ profileform|crispy }}
-        <button type="submit" class="btn btn-success">Register</button>
-    </form>
+    <div class="d-flex justify-content-center">
+
+        <form method="post" autocomplete="off" action="{% url "register" %}" >
+
+            {% csrf_token %}
+            {{ form | crispy}}
+
+            <input type="submit" class="btn btn-success" value="Register">
+
+        </form>
+    </div>
+</div>
+
 {% endblock %}
