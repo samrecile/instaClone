@@ -54,12 +54,12 @@ class RegistrationForm(UserCreationForm):
             'password2'
         )
 
-    def save(self, commit=True):
-        user = super(RegistrationForm, self).save(commit=False)
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['email']
-
-        if commit:
-            user.save()
+    #def save(self, commit=True):
+     #   user = super(RegistrationForm, self).save(commit=False)
+      #  user.first_name = self.cleaned_data['first_name']
+       # user.last_name = self.cleaned_data['email']
+#
+ #       if commit:
+  #          user.save()
         
-        return User 
+   #     return User 

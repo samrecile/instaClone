@@ -28,7 +28,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/login')
 def index(request):
-    user = request.user 
+    user = request.user
     followed_user_list = []
     followed_users = UserFollowing.objects.filter(follower=user)
     for followed_user in followed_users:
@@ -37,7 +37,7 @@ def index(request):
     all_images = all_images[::-1][:10]
     liker = request.user
 
-    
+
     return render(request, 'main/home.html',  {"all_images": all_images, 'liker': liker})
 
 @login_required(login_url='/login')
@@ -99,7 +99,7 @@ def account(request):
         if form.is_valid() and form2.is_valid():
             form.save()
             form2.save()
-            
+
         return redirect('/')
     else:
         form = UpdateProfile(instance=obj)
@@ -234,6 +234,7 @@ def search(request):
 def register(request):
     if not request.user.is_authenticated:
         if request.method == "POST":
+            context = {}
             form = RegistrationForm(request.POST)
             if form.is_valid():
                 form.save()
@@ -244,8 +245,7 @@ def register(request):
                 return redirect("index")
         else:
             form = RegistrationForm()
-            context = {"form": form}
-        return render(request, 'registration/register.html', context)
+        return render(request, 'registration/register.html', {"form": form})
     else:
         return redirect("index")
 
@@ -276,4 +276,3 @@ def logout(request):
     if request.user.is_authenticated:
         auth_logout(request)
     return redirect("login")
-
