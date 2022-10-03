@@ -84,14 +84,17 @@ WSGI_APPLICATION = 'instaClone.wsgi.application'
     }
 } """
 
+import environ
+env = environ.Env()
+environ.Env.read_env()
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'samrecile',
-        'PASSWORD': 'Sjr757474$',
-        'HOST': 'instagramclone.cjyg3ut2rotl.us-east-2.rds.amazonaws.com',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASS'),
+        'HOST': env('DATABASE_HOST'),
         'PORT': '5432'
     }
 }
