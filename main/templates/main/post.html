@@ -3,11 +3,13 @@
 {% block title %}Create an Post{% endblock %} 
 {% load crispy_forms_tags %}
 
-{% block content %} 
-    <h2>Post a pic</h2>
+{% block content %}
+<div class='main'>
+    <h4>Post a pic</h4>
     <form method="POST" enctype="multipart/form-data" action="{% url 'post' %}" class="form-group">
         {% csrf_token %}
         {{ form|crispy }}
-        <button type="submit" class="btn btn-success">Post</button>
+        <button type="submit" class="btn btn-primary">Post</button>
     </form>
+</div>
 {% endblock %}

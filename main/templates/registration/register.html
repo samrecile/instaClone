@@ -1,21 +1,20 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<h1>Register for your account</h1>
-<div class="form">
-    <div class="mt-2 col-md-12"></div>
+{% load static %}
 
-    <div class="d-flex justify-content-center">
+<div class="login-form" >
+    <h4>Register for your account</h4>
+
 
         <form method="post" autocomplete="off" action="{% url "register" %}" >
 
             {% csrf_token %}
             {{ form | crispy}}
 
-            <input type="submit" class="btn btn-success" value="Register">
+            <input type="submit" class="btn btn-primary" value="Register">
 
         </form>
-    </div>
 </div>
 
 {% endblock %}

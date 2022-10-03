@@ -3,74 +3,90 @@
   <head>
     <style type="text/css">
       .main{
-        margin-Left:160px;
-        margin-Right:160px;
-        padding: 0px 10px;
+          margin-left: auto;
+          margin-right: auto;
+          display: table; 
+          min-height: calc(100vh - 70px);
+          padding-top:15px;
+          
       }
 
-      .feed{
-        margin-Left:160px;
-        margin-Right:160px;
-        padding: 20px;
-      }
 
       .card{
-        padding-top: 10px;
-        padding-bottom: 10px;
+          padding-top: 10px;
+          padding-bottom: 10px;
       }
 
       .headline{
-        padding-left: 20px;
+          padding-left: 20px;
       }
 
       .profile-card {
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        transition: 0.3s;
-        border-radius: 5px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        margin-Left:160px;
-        margin-Right:160px;
-        padding: 0px 10px;
+          box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+          transition: 0.3s;
+          border-radius: 5px;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          margin-Left:160px;
+          margin-Right:160px;
+          padding: 0px 10px;
       }
 
       .profile-card:hover {
-        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+          box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
       }
 
       .profile-container {
-        padding: 2px 16px;
+          padding: 2px 16px;
       }
 
       .profilepic {
-        border-radius: 50%;
-        max-width:10%;
-        max-height:10%;
+          border-radius: 50%;
+          max-width:10%;
+          max-height:10%;
       }
 
       .nav-prof-pic {
-        margin:10px;
+          margin:10px;
       }
 
       .likes-count {
-        margin-top: 10px;
-        margin-left: 15px;
+          margin-top: 10px;
+          margin-left: 15px;
       }
 
       img {
-        border-radius: 5px 5px 0 0;
+          border-radius: 5px 5px 0 0;
       }
 
       a {
-        color: black;
-        background-color: transparent;
-        text-decoration: none;
+          color: black;
+          background-color: transparent;
+          text-decoration: none;
       }
-    
+
       #like {
-        margin: 10px;
+          margin: 10px;
+      }
+
+      .footer{
+          background-color: "#F8F8F8";
+          border-top: "5px solid #E7E7E7";
+          text-align: "center";
+          padding: "15px";
+          
+          position: "fixed";
+          left: "0";
+          bottom: "0";
+          height: "60px";
+          width: "100%";
+      }
+
+      .login-form{
+          padding: 50px;
       }
     </style>
+    
 
 
     <!-- Required meta tags -->
@@ -79,9 +95,12 @@
     <!-- bootstrap CSS link -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+
+    
     <title>{% block title %}InstaClone{% endblock %}</title>
   </head>
-  <body>
+  <body style="height:100%; margin:0;">
+    {% load static %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
       <a class="navbar-brand" href="{% url "index" %}">InstaClone</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,43 +108,45 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        {% if user.is_authenticated %}
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            {% if user.is_authenticated %}
-              <a class="nav-link" href="{% url "index" %}">Home<span class="sr-only">(current)</span></a>
-            {% else %}
-              <a class="nav-link" href="{% url "login" %}">Home<span class="sr-only">(current)</span></a>
-            {% endif %}
+            <a class="nav-link" href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            {% if user.is_authenticated %}
-              <a class="nav-link" href="{% url "explore" %}">Explore</a>
-            {% else %}
-              <a class="nav-link" href="{% url "login" %}">Explore</a>
-            {% endif %}
+            <a class="nav-link" href="{% url 'explore' %}">Explore</a>
           </li>
           <li class="nav-item">
-            {% if user.is_authenticated %}
-              <a class="nav-link" href="{% url "post" %}">Post</a>
-            {% else %}
-              <a class="nav-link" href="{% url "login" %}">Post</a>
-            {% endif %}
+            <a class="nav-link" href="{% url 'post' %}">Post</a>
           </li>
-          {% if user.is_authenticated %}
-          <a class="nav-link" href="{% url 'account' %}">Account</a>
-        {% else %}
-            <a class="nav-link" href="{% url "login" %}" class="btn btn-">Login</a>
-        {% endif %}
-          {% if user.is_authenticated %} 
-          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' username=user %}">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          </li>
         </ul>
-        <form method="get" class="form-inline" action="{% url 'search' %}">
-          {% csrf_token %}
-          <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-        <a class="nav-prof-pic" href="{% url 'profile' username=request.user %}"><img class='profilepic' src="{{user.profile.profile_pic}}"></a>
+          
+
+
+        {% else %}
+
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}" class="btn btn-">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Register</a>
+          </li>
+      
+        </ul>
+          
+        {% endif %}
+
+
+          
+    
+  
       </div>
     </nav>
 
@@ -134,74 +155,17 @@
         {% endblock content %}
     </div>
 
-    
+    <div class="push" style="height:60px;"></div>
     <div>
-      <footer class="text-center text-lg-start bg-light text-muted">
-  <!-- Section: Links  -->
-        <section
-          class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom"
-        >
-        </section>
-        <section class="">
-          <div class="container text-center text-md-start mt-5">
-      <!-- Grid row -->
-            <div class="row mt-3">
-        <!-- Grid column -->
-              <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-          <!-- Content -->
-                <h6 class="text-uppercase fw-bold mb-4">
-                  <i class="fas fa-gem me-3" style="padding-top: 100px;"></i>InstaClone
-                </h6>
-                <p>
-                  Instagram clone built by Sam Recile. 
-                </p>
-              </div>
-        <!-- Grid column -->
+      <footer id="footer" class="text-center text-lg-start bg-light text-muted">
+        
 
-        <!-- Grid column -->
-              <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-          <!-- Links -->
-                <h6 class="text-uppercase fw-bold mb-4">
-                  Pages
-                </h6>
-                <p>
-                  <a href="{% url "index" %}" class="btn btn-secondary">Home</a>
-                </p>
-                <p>
-                  <a href="{% url "explore" %}" class="btn btn-secondary">Explore</a>
-                </p>
-                <p>
-                  <a href="{% url "post" %}" class="btn btn-secondary">Post</a>
-                </p>
-              </div>
-        <!-- Grid column -->
-              <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-          <!-- Links -->
-                <h6 class="text-uppercase fw-bold mb-4">
-                  Contact
-                </h6>
-                <p><i class="fas fa-home me-3"></i> New York, NY 10012, US</p>
-                <p>
-                  <i class="fas fa-envelope me-3"></i>
-                  info@example.com
-                </p>
-                <p><i class="fas fa-phone me-3"></i> + 01 234 567 88</p>
-                <p><i class="fas fa-print me-3"></i> + 01 234 567 89</p>
-              </div>
-        <!-- Grid column -->
-            </div>
-      <!-- Grid row -->
-          </div>
-        </section>
-  <!-- Section: Links  -->
-
-  <!-- Copyright -->
         <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
           © 2021 Copyright: Sam J. Recile III
         </div>
-  <!-- Copyright -->
+
       </footer>
-<!-- Footer -->
+
     </div>
     <!-- optional Js -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

@@ -1,57 +1,64 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="profile-card">
-    <div class="profile-container">
-      <h4><b>{{followed.username|lower}} <img class='profilepic' src="{{follower.profile.profile_pic.url}}"></b></h4>
-      <p>{{followers}} followers</p>
-      <p>{{profile_following}} following</p>
-      {% if can_follow %}
-      {% if following == True %}
-        <form action="{% url 'unfollow_user' %}" method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
-            <input type="hidden" name="follower" value="{{user.username}}" readonly/>
-            <input type="hidden" name="value" value="unfollow" readonly/>
-            <button type="submit" class="btn btn-secondary">Following</button>
-        </form>
-      {% elif following == False %}
-        <form action="{% url 'follow_user' %}" method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
-            <input type="hidden" name="follower" value="{{user.username}}" readonly/>
-            <input type="hidden" name="value" value="follow" readonly/>
-            <button type="submit" class="btn btn-secondary">
-                Follow
-            </button>
-        </form>
-       {% endif %}
-       {% endif %}
-    </div>
-</div>
-{% if images %} {% for image in images %}
-<div class='main'>
-    <div class="card" style="width: 30rem; ">
-        {% if image.imageuploader_profile %}
-        <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{follower.profile.profile_pic.url}}"></a> - <strong>{{image.imageuploader_profile}}</strong><a href="{% url 'delete_post' post_id=image.image_id %}"><em style="padding-left: 200px;">delete</em></p></a>
-        {% else %} 
-        <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{follower.profile.profile_pic.url}}"></a></p>
-        {% endif %}
-        <img class="card-img-top" src="{{ image.image.url }}" alt="Card image cap">
-        <p class="likes-count"><em>likes - {{image.likes_count}}</em></p>
-        <form action="{% url 'like_post' %}" method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="post_profile" value="{{image.imageuploader_profile}}" readonly/>
-          <input type="hidden" name="post_id" value="{{image.image_id}}" readonly/>
-          <input type="hidden" name="liker" value="{{liker}}" readonly/>
-          <input type="hidden" name="value" value="like" readonly/>
-          <button type="submit" id='like' class="btn btn-outline-danger">Like Post</button>
-        </form>
-        <div class="card-body">
-            <p class="card-text"><strong>{{image.imageuploader_profile}}</strong> - "{{image.image_caption}}"</p>
+{% load static %}
+<div class='main' >
+    <div class="profile-card">
+        <div class="profile-container">
+            {% if profile_pic.url %}
+            <h4><b>{{followed.username|lower}} <img class='profilepic' src="{{follower.profile.profile_pic.url}}"></b></h4>
+            {% else %}
+            <h4><b>{{followed.username|lower}}</b></h4>
+            {% endif %}
+            <p>{{followers}} followers</p>
+            <p>{{profile_following}} following</p>
+            {% if can_follow %}
+            {% if following == True %}
+                <form action="{% url 'unfollow_user' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
+                    <input type="hidden" name="follower" value="{{user.username}}" readonly/>
+                    <input type="hidden" name="value" value="unfollow" readonly/>
+                    <button type="submit" class="btn btn-secondary">Following</button>
+                </form>
+            {% elif following == False %}
+                <form action="{% url 'follow_user' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="followed_user" value="{{followed}}" readonly/>
+                    <input type="hidden" name="follower" value="{{user.username}}" readonly/>
+                    <input type="hidden" name="value" value="follow" readonly/>
+                    <button type="submit" class="btn btn-secondary">
+                        Follow
+                    </button>
+                </form>
+            {% endif %}
+            {% endif %}
         </div>
     </div>
+    {% if images %} {% for image in images %}
+    <div class='main'>
+        <div class="card" style="width: 30rem; ">
+            {% if image.imageuploader_profile and follower.profile.profile_pic.url %}
+            <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{follower.profile.profile_pic.url}}"></a> - <strong>{{image.imageuploader_profile}}</strong><a href="{% url 'delete_post' post_id=image.image_id %}"><em style="padding-left: 200px;">delete</em></p></a>
+            {% else %} 
+            <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><strong>{{image.imageuploader_profile}}</strong></a></p>
+            {% endif %}
+            <img class="card-img-top" src="{{ image.image.url }}" alt="Card image cap">
+            <p class="likes-count"><em>likes - {{image.likes_count}}</em></p>
+            <form action="{% url 'like_post' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="post_profile" value="{{image.imageuploader_profile}}" readonly/>
+            <input type="hidden" name="post_id" value="{{image.image_id}}" readonly/>
+            <input type="hidden" name="liker" value="{{liker}}" readonly/>
+            <input type="hidden" name="value" value="like" readonly/>
+            <button type="submit" id='like' class="btn btn-outline-danger">Like Post</button>
+            </form>
+            <div class="card-body">
+                <p class="card-text"><strong>{{image.imageuploader_profile}}</strong> - "{{image.image_caption}}"</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
 </div>
-{% endfor %}
-{% endif %}
 {% endblock %}

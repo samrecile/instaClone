@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'fontawesomefree'
 ]
 
 MIDDLEWARE = [
@@ -76,24 +77,24 @@ WSGI_APPLICATION = 'instaClone.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+} """
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'samrecile',
+        'PASSWORD': 'Sjr757474$',
+        'HOST': 'instagramclone.cjyg3ut2rotl.us-east-2.rds.amazonaws.com',
+        'PORT': '5432'
+    }
 }
-
-
-#DATABASES = {
-   # 'default': {
-       # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-      #  'NAME': 'instaClone',
-     #   'USER': 'samrecile',
-    #    'PASSWORD': 'Sjr122198?!$',
-   #     'HOST': '127.0.0.1',
-  #      'PORT': '5432'
- #   }
-#}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -129,7 +130,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -140,6 +141,11 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),) 
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

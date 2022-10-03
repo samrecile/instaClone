@@ -1,30 +1,23 @@
+from datetime import datetime, timedelta
+
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.http import HttpResponse
-from django.conf.urls import include
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from .forms import UserForm, ProfileForm, PostForm, LoginForm, UpdateProfile, UpdateProfile2, RegistrationForm
-from django.contrib.auth.forms import AuthenticationForm
-from django.conf.urls.static import static
-from .models import Profile, Image, Comments, UserFollowing
-from django.contrib.auth.models import User
-from . import models
-from annoying.decorators import ajax_request
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
-from django.core.files.storage import FileSystemStorage
-from datetime import datetime, timedelta
-from django.db.models import Q
-from django.contrib.auth.views import LoginView
-
-# enables sends confirmation mail using @gmail
-from django.core.mail import send_mail
-
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
+from django.conf.urls.static import static
+from django.core.mail import send_mail
+from django.db.models import Q
+
+from .models import Profile, Image, Comments, UserFollowing
+from .forms import UserForm, ProfileForm, PostForm, LoginForm, UpdateProfile, UpdateProfile2, RegistrationForm
+
+
 
 @login_required(login_url='/login')
 def index(request):
