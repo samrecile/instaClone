@@ -5,12 +5,13 @@
 
 {% block content %}
 {% load static %}
-<div class='main' >
+<div class='main' style="padding:50px;">
     <h4>Feed</h4>
 
-    {% if all_images %} {% for image in all_images %}
+    {% if all_images %} 
+    {% for image in all_images %}
 
-    <div class="card" style="width: 30rem; ">
+    <div class="card" id="post-card" style="width: 30rem; ">
         {% if image %}
         {% if image.imageuploader_profile and follower.profile.profile_pic.url %}
         <p class='headline'><a href="{% url 'profile' username=image.imageuploader_profile %}"><img class='profilepic' src="{{liker.profile.profile_pic.url}}"></a></p>
@@ -35,8 +36,8 @@
         </div>
         {% endif %}
     </div>
+    {% endfor %}
 </div>
-{% endfor %}
 {% else %} 
 <p>No images</p>
 {% endif %}
