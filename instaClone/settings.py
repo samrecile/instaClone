@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-!p5i03-f325n!u7fz&$lbr(#+wd^qtryp$01%!pgr%svyc@#gc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['recile-instaclone.herokuapp.com']
 
 
 # Application definition
