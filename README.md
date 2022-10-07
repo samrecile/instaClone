@@ -7,7 +7,6 @@ This was a CRUD project I built to help me get some experience with Django, the 
 
 Features include:
 - posting, deleting, and liking pictures
-- commenting
 - login/logout/register, as well as update account info
 - following & unfollowing users
 
