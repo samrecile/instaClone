@@ -3,6 +3,7 @@
 
 ## About This Project
 DEMO: https://recile-instaclone.herokuapp.com/
+
 This was a CRUD project I built to help me get some experience with Django, the ORM, database design, forms & modelforms, along with other django functionality. 
 
 Features include:
@@ -28,6 +29,7 @@ n/a
 
 ## Contact
 Sam Recile - recilesam@gmail.com
+
 Project link: https://github.com/samrecile/instaClone
 
 ## Acknowledgments & Resources
